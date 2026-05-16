@@ -1,7 +1,7 @@
 import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
-const MAPBOX_TOKEN = 'YOUR_ACCESS_TOKEN_HERE';
+const MAPBOX_TOKEN = window.MAPBOX_TOKEN || 'YOUR_ACCESS_TOKEN_HERE';
 const BOSTON_BIKE_LANES_URL =
   'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D';
 const CAMBRIDGE_BIKE_LANES_URL =
