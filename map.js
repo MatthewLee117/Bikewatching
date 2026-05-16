@@ -89,7 +89,8 @@ map.on('load', async () => {
     ...d,
     lat: Number(d.Lat ?? d.lat),
     lon: Number(d.Long ?? d.long ?? d.lon),
-    id: String(d.Number ?? d.station_id ?? d.id),
+    id: String(d.short_name ?? d.Number ?? d.station_id ?? d.id),
+    label: d.name ?? d.NAME ?? d.Name ?? 'Unknown station',
   }));
 
   stationsById = d3.index(stations, (d) => d.id);
@@ -237,7 +238,7 @@ function updateScatterPlot(timeFilter) {
     .append('circle')
     .on('mouseenter', (event, d) => {
       tooltip.style('visibility', 'visible').text(
-        `${d.NAME} | Total: ${d.totalTraffic} | Departures: ${d.departures} | Arrivals: ${d.arrivals}`,
+        `${d.label} (${d.id}) | Total: ${d.totalTraffic} | Departures: ${d.departures} | Arrivals: ${d.arrivals}`,
       );
     })
     .on('mousemove', (event) => {
