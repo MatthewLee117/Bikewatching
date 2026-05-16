@@ -1,0 +1,59 @@
+#map {
+  width: 100%;
+  min-height: 65vh;
+  border-radius: 0.75rem;
+  border: 1px solid #cbd5e1;
+  overflow: hidden;
+  position: relative;
+}
+
+#map svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.flow-colors {
+  --color-departures: steelblue;
+  --color-arrivals: darkorange;
+  --color: color-mix(
+    in oklch,
+    var(--color-departures) calc(100% * var(--departure-ratio)),
+    var(--color-arrivals)
+  );
+}
+
+#map circle {
+  pointer-events: auto;
+  fill: var(--color);
+  fill-opacity: 0.6;
+  stroke: white;
+  stroke-width: 1;
+}
+
+.legend {
+  display: flex;
+  gap: 1px;
+  border-radius: 0.65rem;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+}
+
+.legend > div {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: #0f172a;
+  padding: 0.5rem 1rem;
+  background: var(--color);
+}
+
+@media (max-width: 640px) {
+  body {
+    padding: 0.75rem;
+  }
+
+  #map {
+    min-height: 58vh;
+  }
+}
