@@ -1,7 +1,8 @@
 import mapboxgl from 'https://cdn.jsdelivr.net/npm/mapbox-gl@2.15.0/+esm';
 import * as d3 from 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
-const MAPBOX_TOKEN = window.MAPBOX_TOKEN || 'YOUR_ACCESS_TOKEN_HERE';
+const MAPBOX_TOKEN_STORAGE_KEY = 'bikewatching.mapboxToken';
+const MAPBOX_TOKEN = resolveMapboxToken();
 const BOSTON_BIKE_LANES_URL =
   'https://bostonopendata-boston.opendata.arcgis.com/datasets/boston::existing-bike-network-2022.geojson?outSR=%7B%22latestWkid%22%3A3857%2C%22wkid%22%3A102100%7D';
 const CAMBRIDGE_BIKE_LANES_URL =
@@ -9,8 +10,9 @@ const CAMBRIDGE_BIKE_LANES_URL =
 const STATIONS_URL = 'https://dsc106.com/labs/lab07/data/bluebikes-stations.json';
 const TRAFFIC_URL = 'https://dsc106.com/labs/lab07/data/bluebikes-traffic-2024-03.csv';
 
-if (!MAPBOX_TOKEN || MAPBOX_TOKEN === 'YOUR_ACCESS_TOKEN_HERE') {
-  console.warn('Add your Mapbox token in map.js to render the map.');
+if (!MAPBOX_TOKEN) {
+  renderMissingTokenMessage();
+  throw new Error('Missing Mapbox token.');
 }
 mapboxgl.accessToken = MAPBOX_TOKEN;
 
@@ -152,6 +154,40 @@ function filterByMinute(tripsByMinute, minute) {
   }
 
   return tripsByMinute.slice(minMinute, maxMinute).flat();
+}
+
+function resolveMapboxToken() {
+  if (window.MAPBOX_TOKEN && window.MAPBOX_TOKEN.startsWith('pk.')) {
+    return window.MAPBOX_TOKEN;
+  }
+
+  const urlToken = new URLSearchParams(window.location.search).get('mapboxToken');
+  if (urlToken?.startsWith('pk.')) {
+    localStorage.setItem(MAPBOX_TOKEN_STORAGE_KEY, urlToken);
+    return urlToken;
+  }
+
+  const storedToken = localStorage.getItem(MAPBOX_TOKEN_STORAGE_KEY);
+  if (storedToken?.startsWith('pk.')) {
+    return storedToken;
+  }
+
+  const enteredToken = window.prompt(
+    'Enter your Mapbox public token (starts with pk.). It will be stored in this browser for this site.',
+  );
+  if (enteredToken?.startsWith('pk.')) {
+    localStorage.setItem(MAPBOX_TOKEN_STORAGE_KEY, enteredToken);
+    return enteredToken;
+  }
+
+  return null;
+}
+
+function renderMissingTokenMessage() {
+  const mapContainer = document.querySelector('#map');
+  if (!mapContainer) return;
+  mapContainer.innerHTML =
+    '<p style="margin:0;padding:1rem;font-weight:600">Mapbox token missing. Reload and enter a valid public token (pk...).</p>';
 }
 
 function computeStationTraffic(stationList, timeFilter = -1) {
