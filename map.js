@@ -116,6 +116,7 @@ map.on('load', async () => {
 
 map.on('move', () => updateScatterPlot(Number(timeSlider.value)));
 map.on('zoom', () => updateScatterPlot(Number(timeSlider.value)));
+map.on('resize', () => updateScatterPlot(Number(timeSlider.value)));
 
 timeSlider.addEventListener('input', () => {
   const value = Number(timeSlider.value);
@@ -221,6 +222,8 @@ function computeStationTraffic(stationList, timeFilter = -1) {
 
 function updateScatterPlot(timeFilter) {
   if (!stations.length) return;
+  const { clientWidth, clientHeight } = map.getContainer();
+  svg.attr('width', clientWidth).attr('height', clientHeight);
 
   const filteredStations = computeStationTraffic(stations, timeFilter).filter(
     (d) => d.totalTraffic > 0,
