@@ -33,6 +33,7 @@ let arrivalsByMinute = Array.from({ length: 1440 }, () => []);
 
 const radiusScale = d3.scaleSqrt().range([0, 25]);
 const stationFlow = d3.scaleQuantize().domain([0, 1]).range([0, 0.5, 1]);
+const flowColor = d3.interpolateRgb('darkorange', 'steelblue');
 
 const svg = d3.select('#map').append('svg').classed('flow-colors', true);
 const tooltip = d3
@@ -254,8 +255,8 @@ function updateScatterPlot(timeFilter) {
     .attr('cx', (d) => getMapPoint(d).x)
     .attr('cy', (d) => getMapPoint(d).y)
     .attr('r', (d) => radiusScale(d.totalTraffic))
-    .style('--departure-ratio', (d) => {
-      if (!d.totalTraffic) return 0.5;
-      return stationFlow(d.departures / d.totalTraffic);
+    .style('fill', (d) => {
+      if (!d.totalTraffic) return flowColor(0.5);
+      return flowColor(stationFlow(d.departures / d.totalTraffic));
     });
 }

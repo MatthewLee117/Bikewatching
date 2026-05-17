@@ -16,16 +16,11 @@
 .flow-colors {
   --color-departures: steelblue;
   --color-arrivals: darkorange;
-  --color: color-mix(
-    in oklch,
-    var(--color-departures) calc(100% * var(--departure-ratio)),
-    var(--color-arrivals)
-  );
 }
 
 #map circle {
   pointer-events: auto;
-  fill: var(--color);
+  fill: var(--color, #475569);
   fill-opacity: 0.6;
   stroke: white;
   stroke-width: 1;
@@ -45,7 +40,7 @@
   font-weight: 600;
   color: #0f172a;
   padding: 0.5rem 1rem;
-  background: var(--color);
+  background: var(--color, #e2e8f0);
 }
 
 @media (max-width: 640px) {
